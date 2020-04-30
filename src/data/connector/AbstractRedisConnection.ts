@@ -2,8 +2,6 @@ import * as Redis from "ioredis";
 
 import AbstractSetting from "src/core/settings/AbstractSetting";
 import Logger from "src/core/logger/Logger";
-import {ERedisConnectionMode} from "src/core/config_types/IRedisConfig";
-import {redisTypeFromConfigMapping} from "./RedisConnectionCreator"
 
 export abstract class AbstractRedisConnection {
 
@@ -20,22 +18,40 @@ export abstract class AbstractRedisConnection {
   protected _logger: Logger;
 
   /**
-   * Init service from settings.
-   * Calls {@link this.initializeRedisConnection}
+   * application settings
    */
-  constructor(protected _setting: AbstractSetting) {
-    this.initializeLogger();
-    this.initializeRedisConnection();
-    this.addCallbacks();
-  }
+  protected _setting: AbstractSetting
 
+
+  /* Abstracts  */
 
   /**
    * Initialize {@link this._logger} from config
    */
-  protected initializeLogger() {
-    this._logger = new Logger(this._setting, this.constructor.name);
-  }
+  protected abstract initializeLogger();
+
+  /**
+   * Initialize {@link this._redis} connection from config.
+   * This will build redis host('s) based on the config.
+   *
+   * - For more data: {@link https://github.com/luin/ioredis/blob/master/API.md#Commander}
+   */
+  protected abstract initializeRedisConnection();
+
+  /**
+   * This will query the db with connection
+   *
+   * @param queryMapName the query map
+   * @param mapType will be concat to queryMapName value
+   * @param lastRequested the last time that the client requested this query (only updates will show)
+   *
+   * @return Promise<any> - the promise result will be the the db result
+   */
+  public abstract async queryForRedis(queryMapName: string, mapType: string, lastRequested?: number): Promise<any>;
+
+
+
+  /* Some implemented connection methods */
 
   /**
    * Will be called when the connection is lost.
@@ -69,49 +85,8 @@ export abstract class AbstractRedisConnection {
     return this._setting.redisConfig.reconnectOnError;
   }
 
-
   /**
-   * Initialize {@link this._redis} connection from config
-   * - For more data: {@link https://github.com/luin/ioredis/blob/master/API.md#Commander}
-   */
-  protected initializeRedisConnection() {
-    const redisConf = this._setting.redisConfig;
-
-    if (redisConf.ports.length !== redisConf.hosts.length) {
-      this._logger.error(`Error in redis Config!! Exiting!`);
-      this._logger.error(`redisConf.ports.length (${redisConf.ports.length})
-                              !== redisConf.hosts.length (${redisConf.hosts.length})`);
-      process.exit(16);
-    }
-
-    const redisDriverOptions = {
-      db: redisConf.db,
-      password: redisConf.password,
-      connectTimeout: redisConf.connectionTimeout,
-      name: redisConf.dbName,
-      retryStrategy: this.redisConnectionRetryStrategy,
-      redisReconnectOnError: this.redisReconnectOnError,
-      retryDelayOnFailover: redisConf.connectionTimeout,
-      maxRetriesPerRequest: redisConf.maxRetriesPerRequest,
-      showFriendlyErrorStack: redisConf.showFriendlyErrorStack
-    };
-
-    this._redis = this.addRedisHosts(redisDriverOptions);
-  }
-
-
-  /**
-   *  This will build redis host('s) based on the config.
-   *  <b>Only</b> hosts and ports, you will need to assign the values for config object!
-   */
-  protected addRedisHosts(redisOptions): Redis {
-    const connectionMode = ERedisConnectionMode[this._setting.redisConfig.connectionMode];
-
-    this._redis = redisTypeFromConfigMapping(connectionMode, this._setting, redisOptions);
-  }
-
-  /**
-   * Add callbacks for redis connection (mainly for logs)
+   * Add callbacks for redis connection (mainly for logs).
    */
   protected addCallbacks() {
     if (!this._redis) {
@@ -129,8 +104,8 @@ export abstract class AbstractRedisConnection {
         this._logger.debug(`Redis monitor on connection:\n\t${time}\n\t${args}\n\t${source}\n\t${database}`);
       });
     });
-
   }
+
 
 
 }
