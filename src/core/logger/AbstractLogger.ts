@@ -7,7 +7,7 @@ export abstract class AbstractLogger {
   /**
    * Init service from settings
    */
-  protected initService() {
+  protected initLogger() {
     this.checkForLogFileDir();
     this.initializeLogger();
   }

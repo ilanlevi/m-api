@@ -11,7 +11,7 @@ export default class Logger extends AbstractLogger {
 
   constructor(private setting: AbstractSetting, protected _loggerClassName?: string) {
     super();
-    this.initService();
+    this.initLogger();
   }
 
   /* Overrides */
