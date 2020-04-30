@@ -1,21 +1,20 @@
 const schema = `
-  type Car {
+  type Human {
    lastUpdated: Float
    actionType: String
-   entity: CarEntity
+   entity: HumanEntity
   }
 
-  type CarEntity {
-    blabla: String
-    _id : String
+  type HumanEntity {
+    mapType: String
     name: String
-    type: String
+    id: Integer
   }
 
   # the schema allows the following query:
   type Query {
-    human(bla: String, lastUpdated: Float!): [Car]
+    human(bla: String, lastUpdated: Float!): [Human]
   }
-`
+`;
 
 export default schema;

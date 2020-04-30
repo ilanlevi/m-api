@@ -4,16 +4,17 @@ import cors from 'cors';
 import { ApolloServer } from 'apollo-server-express';
 import resolvers from 'src/graphql/resolvers';
 import typeDefs from 'src/graphql/type-defs';
-import HttpManager from 'src/services/HttpManager';
+
 import Logger from 'src/core/logger/Logger';
 import Settings from 'src/core/settings/Settings';
-import HttpConnector from 'src/data/connector/HttpConnector';
+import RedisConnector from 'src/data/connector/RedisConnector';
+import RedisQueryManager from 'src/services/RedisQueryManager';
 
 const app = express();
 const settings = new Settings();
 const logger = new Logger(settings);
-const httpConnector = new HttpConnector(logger, settings);
-const httpManager = new HttpManager(logger, httpConnector);
+const redisConnector = new RedisConnector(settings);
+const redisManager = new RedisQueryManager(settings, redisConnector);
 
 app.use(cors());
 // Should be removed when apollo-server supports offline playground
@@ -26,7 +27,7 @@ const server = new ApolloServer({
   resolvers,
   typeDefs,
   context: {
-    httpManager,
+    redisManager,
   },
   playground: {
     cdnUrl: '.',
@@ -36,6 +37,6 @@ const server = new ApolloServer({
 
 server.applyMiddleware({ app });
 
-app.listen({ port: settings.config.server.port }, () => {
+app.listen({ port: settings.serverConfig.port }, () => {
   logger.info(`Apollo Server on http://localhost:${settings.serverConfig.port}/graphql`);
 });

@@ -1,5 +1,5 @@
-import HttpManager from 'src/services/HttpManager';
+import RedisQueryManager from 'src/services/RedisQueryManager';
 
 export default interface IAppContext {
-  httpManager: HttpManager;
+  redisManager: RedisQueryManager;
 }

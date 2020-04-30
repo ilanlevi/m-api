@@ -1,23 +1,20 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
-  input ActionRequest {
-    body: String
-    url: String
-    timeout: Int
+  type Human {
+    lastUpdated: Float
+    actionType: String
+    entity: HumanEntity
   }
 
-  type ActionResponse {
-    status: String
-    result: String
-    message: String
+  type HumanEntity {
+    mapType: String
+    name: String
+    id: Int
   }
 
-  type Mutation {
-    dohttp(actionRequest: ActionRequest): ActionResponse
-  }
-
+  # the schema allows the following query:
   type Query {
-    status: String
+    human(mapType: String, lastUpdated: Float!): [Human]
   }
 `;

@@ -1,16 +1,14 @@
-import * as Redis from "ioredis";
+import * as Redis from 'ioredis';
 
-import AbstractSetting from "src/core/settings/AbstractSetting";
-import Logger from "src/core/logger/Logger";
+import AbstractSetting from 'src/core/settings/AbstractSetting';
+import Logger from 'src/core/logger/Logger';
 
 export abstract class AbstractRedisConnection {
-
   /**
    * io-redis driver instance
    *  - For more data: {@link https://github.com/luin/ioredis/blob/master/API.md#Commander}
    */
   protected _redis: Redis;
-
 
   /**
    * class logger instance
@@ -20,8 +18,7 @@ export abstract class AbstractRedisConnection {
   /**
    * application settings
    */
-  protected _setting: AbstractSetting
-
+  protected _setting: AbstractSetting;
 
   /* Abstracts  */
 
@@ -48,8 +45,6 @@ export abstract class AbstractRedisConnection {
    * @return Promise<any> - the promise result will be the the db result
    */
   public abstract async queryForRedis(queryMapName: string, mapType: string, lastRequested?: number): Promise<any>;
-
-
 
   /* Some implemented connection methods */
 
@@ -79,7 +74,7 @@ export abstract class AbstractRedisConnection {
    */
   protected redisReconnectOnError(errorMsg) {
     this._logger?.error(`Redis is disconnected! Error is: ${errorMsg}.\nWe will
-        ${this._setting.redisConfig.reconnectOnError ? "" : " not "}
+        ${this._setting.redisConfig.reconnectOnError ? '' : ' not '}
         try to reconnect (check config)`);
 
     return this._setting.redisConfig.reconnectOnError;
@@ -95,7 +90,7 @@ export abstract class AbstractRedisConnection {
     }
 
     this._redis.connect(() => {
-      this._logger.info("Redis is connected! (more data on debug)");
+      this._logger.info('Redis is connected! (more data on debug)');
       this._logger.debug(this._redis);
     });
 
@@ -105,8 +100,4 @@ export abstract class AbstractRedisConnection {
       });
     });
   }
-
-
-
 }
-

@@ -1,11 +1,10 @@
 import AbstractSetting from 'src/core/settings/AbstractSetting';
-import {DEFAULT_SERVER_CONFIG, DEFAULT_SERVER_CONFIG_NAME} from "src/core/config_types/IServerConfig";
-import {DEFAULT_AUTH_CONFIG, DEFAULT_AUTH_CONFIG_NAME} from "src/core/config_types/IAuthConfig";
-import {DEFAULT_LOGGER_CONFIG, DEFAULT_LOGGER_CONFIG_NAME} from "src/core/config_types/ILoggerConfig";
-import {DEFAULT_REDIS_CONFIG, DEFAULT_REDIS_CONFIG_NAME} from "src/core/config_types/IRedisConfig";
+import { DEFAULT_SERVER_CONFIG, DEFAULT_SERVER_CONFIG_NAME } from 'src/core/config_types/IServerConfig';
+import { DEFAULT_AUTH_CONFIG, DEFAULT_AUTH_CONFIG_NAME } from 'src/core/config_types/IAuthConfig';
+import { DEFAULT_LOGGER_CONFIG, DEFAULT_LOGGER_CONFIG_NAME } from 'src/core/config_types/ILoggerConfig';
+import { DEFAULT_REDIS_CONFIG, DEFAULT_REDIS_CONFIG_NAME } from 'src/core/config_types/IRedisConfig';
 
 export default class Settings extends AbstractSetting {
-
   constructor() {
     super();
     this.initServices();
@@ -18,7 +17,7 @@ export default class Settings extends AbstractSetting {
   }
 
   protected initLoggerConfig() {
-    this._loggerConfig =  this.readConfigOrDefault(DEFAULT_LOGGER_CONFIG_NAME, DEFAULT_LOGGER_CONFIG);
+    this._loggerConfig = this.readConfigOrDefault(DEFAULT_LOGGER_CONFIG_NAME, DEFAULT_LOGGER_CONFIG);
   }
 
   protected initRedisConfig() {

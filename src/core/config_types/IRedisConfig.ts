@@ -20,18 +20,18 @@ export interface IRedisConfig {
  * Redis connection type (for redis driver)
  */
 export enum ERedisConnectionMode {
-  SINGLE_SERVER = "single",
-  SENTINEL = "sentinel",
-  CLUSTER = "cluster"
+  SINGLE_SERVER = 'single',
+  SENTINEL = 'sentinel',
+  CLUSTER = 'cluster',
 }
 
 /**
  * Assuming that are multiple nodes, how to choose one
  */
 export enum EPreferredConnectionType {
-  ALL = "all",
-  WRITE_ONLY = "master",
-  READ_ONLY = "slave"
+  ALL = 'all',
+  WRITE_ONLY = 'master',
+  READ_ONLY = 'slave',
 }
 
 /**
@@ -41,19 +41,19 @@ export enum EConnectionTimeout {
   SHORT = 500,
   MEDIUM = 750,
   LONG = 1500,
-  NONE = -1
+  NONE = -1,
 }
 
 // the config name environment variable
-export const DEFAULT_REDIS_CONFIG_NAME = "redis";
+export const DEFAULT_REDIS_CONFIG_NAME = 'redis';
 
 /**
  * Redis connection defaults
  */
-export const DEFAULT_REDIS_SERVER_HOST_NAME = ["localhost"];
-export const DEFAULT_REDIS_SINGLE_SERVER_PORT = ["6379"];
-export const DEFAULT_REDIS_SENTINEL_SERVER_PORT = ["26379"];
-export const DEFAULT_REDIS_DB_NAME = "mymaster";
+export const DEFAULT_REDIS_SERVER_HOST_NAME = ['localhost'];
+export const DEFAULT_REDIS_SINGLE_SERVER_PORT = ['6379'];
+export const DEFAULT_REDIS_SENTINEL_SERVER_PORT = ['26379'];
+export const DEFAULT_REDIS_DB_NAME = 'mymaster';
 export const DEFAULT_REDIS_RETRY_DELAY = 750; // 750 ms
 export const DEFAULT_REDIS_RETRY_PER_QUERY = 3; // 3 times
 export const DEFAULT_REDIS_RETRY_CONNECT_AFTER_ERROR = true; // 3 times
@@ -74,5 +74,5 @@ export const DEFAULT_REDIS_CONFIG: IRedisConfig = {
   maxRetriesPerRequest: DEFAULT_REDIS_RETRY_PER_QUERY,
   retryDelay: DEFAULT_REDIS_RETRY_DELAY,
   ports: DEFAULT_REDIS_SINGLE_SERVER_PORT,
-  dbName: DEFAULT_REDIS_DB_NAME
+  dbName: DEFAULT_REDIS_DB_NAME,
 };

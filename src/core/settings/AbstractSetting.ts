@@ -1,7 +1,7 @@
-import {IServerConfig} from "src/core/config_types/IServerConfig";
-import {IAuthConfig} from "src/core/config_types/IAuthConfig";
-import {ILoggerConfig} from "src/core/config_types/ILoggerConfig";
-import {IRedisConfig} from "src/core/config_types/IRedisConfig";
+import { IServerConfig } from 'src/core/config_types/IServerConfig';
+import { IAuthConfig } from 'src/core/config_types/IAuthConfig';
+import { ILoggerConfig } from 'src/core/config_types/ILoggerConfig';
+import { IRedisConfig } from 'src/core/config_types/IRedisConfig';
 
 export default abstract class AbstractSetting {
   protected _serverConfig: IServerConfig;
@@ -13,13 +13,11 @@ export default abstract class AbstractSetting {
    * Init service configuration from environment variables or deafult
    */
   protected initServices() {
-
     this.initServerConfig();
     this.initAuthConfig();
     this.initLoggerConfig();
     this.initRedisConfig();
   }
-
 
   /**
    * Return object with settings, from process env variables or from default values (if given).
@@ -29,19 +27,19 @@ export default abstract class AbstractSetting {
    *
    * @returns config object
    */
-  protected readConfigOrDefault<T>(configName:string, defaultsValues: T) : T{
+  protected readConfigOrDefault<T>(configName: string, defaultsValues: T): T {
     if (!process.env[configName]) {
-      console.warn(`Cannot read process.env[${configName}]! Using default!`)
+      console.warn(`Cannot read process.env[${configName}]! Using default!`);
 
       return defaultsValues;
     }
 
-    const configValues = {} ;
+    const configValues = {};
     Object.keys(defaultsValues).forEach(keyName => {
       configValues[keyName] = process.env[configName][keyName] || defaultsValues?.[keyName];
     });
 
-    console.info(`Settings for ${configName} is: \n${configValues}`)
+    console.info(`Settings for ${configName} is: \n${configValues}`);
 
     return configValues as T;
   }
@@ -69,7 +67,6 @@ export default abstract class AbstractSetting {
   protected abstract initRedisConfig();
 
   /* Getters && Setters */
-
 
   get serverConfig(): IServerConfig {
     return this._serverConfig;

@@ -1,10 +1,12 @@
-import { MutationDohttpArgs, ActionResponse } from 'src/interfaces/types.d';
+import { QueryHumanArgs, HumanEntity, Human } from 'src/interfaces/types.d';
 import IAppContext from 'src/interfaces/IAppContext';
 
+const QUERY_NAME = 'human';
+
 export default {
-  Mutation: {
-    dohttp(parent: null, args: MutationDohttpArgs, context: IAppContext): Promise<ActionResponse> {
-      return context.httpManager.doHttp(args.actionRequest);
+  query: {
+    query(parent: null, args: QueryHumanArgs, context: IAppContext): Promise<HumanEntity[]> {
+      return context.redisManager.queryRedis<HumanEntity>(QUERY_NAME, args.mapType, args.lastUpdated);
     },
   },
 };

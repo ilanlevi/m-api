@@ -1,10 +1,10 @@
-import * as fs from 'fs'
-import * as  Winston from 'winston'
-import * as WinstonUDPTransport from 'winston-udp'
+import * as fs from 'fs';
+import * as Winston from 'winston';
+import * as WinstonUDPTransport from 'winston-udp';
 
-import {AbstractLogger} from './AbstractLogger';
-import {ENetProtocol, MY_LOGGER_FORMAT} from "src/core/config_types/ILoggerConfig";
-import AbstractSetting from "src/core/settings/AbstractSetting";
+import { AbstractLogger } from './AbstractLogger';
+import { ENetProtocol, MY_LOGGER_FORMAT } from 'src/core/config_types/ILoggerConfig';
+import AbstractSetting from 'src/core/settings/AbstractSetting';
 
 export default class Logger extends AbstractLogger {
   private logger: Winston.Logger;
@@ -16,26 +16,22 @@ export default class Logger extends AbstractLogger {
 
   /* Overrides */
 
-  protected log(level: string, message: string, classLogged?: any,) {
-    this.logger.log(level.toLowerCase(), message)
+  protected log(level: string, message: string, classLogged?: any) {
+    this.logger.log(level.toLowerCase(), message);
   }
 
   protected checkForLogFileDir() {
     const dir = this.setting.loggerConfig.fileDir;
 
     if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir)
+      fs.mkdirSync(dir);
     }
   }
 
   protected initializeLogger() {
     this.logger = Winston.createLogger({
       level: this.setting.loggerConfig.logLevel,
-      format: Winston.format.combine(
-        Winston.format.colorize(),
-        Winston.format.timestamp(),
-        MY_LOGGER_FORMAT,
-      ),
+      format: Winston.format.combine(Winston.format.colorize(), Winston.format.timestamp(), MY_LOGGER_FORMAT),
       transports: [
         new Winston.transports.Console(), // write to console
         new Winston.transports.File({
@@ -44,14 +40,13 @@ export default class Logger extends AbstractLogger {
           maxsize: this.setting.loggerConfig.logFileMaxSize,
           maxFiles: this.setting.loggerConfig.maxLogFiles,
           format: MY_LOGGER_FORMAT,
-        })
-      ]
+        }),
+      ],
     });
 
     if (this.setting.loggerConfig.externalLoggerConfig) {
       this.addExternalLogger();
     }
-
   }
 
   /**

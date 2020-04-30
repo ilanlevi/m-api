@@ -1,10 +1,9 @@
 /**
  * Logger service api
  */
-import {ELogLevel} from "src/core/config_types/ILoggerConfig";
+import { ELogLevel } from 'src/core/config_types/ILoggerConfig';
 
 export abstract class AbstractLogger {
-
   /**
    * Init service from settings
    */
@@ -29,7 +28,7 @@ export abstract class AbstractLogger {
    *        When {@link this.className} isn't null, the value will be ignored.
    */
   public info(message: string, classLogged?: string) {
-    this.log(ELogLevel.INFO, message, this.className || classLogged)
+    this.log(ELogLevel.INFO, message, this.className || classLogged);
   }
 
   /**
@@ -39,7 +38,7 @@ export abstract class AbstractLogger {
    *        When {@link this.className} isn't null, the value will be ignored.
    */
   public error(message: string, classLogged?: string) {
-    this.log(ELogLevel.ERROR, message, this.className || classLogged)
+    this.log(ELogLevel.ERROR, message, this.className || classLogged);
   }
 
   /**
@@ -49,7 +48,7 @@ export abstract class AbstractLogger {
    *        When {@link this.className} isn't null, the value will be ignored.
    */
   public warn(message: string, classLogged?: string) {
-    this.log(ELogLevel.WARN, message, this.className || classLogged)
+    this.log(ELogLevel.WARN, message, this.className || classLogged);
   }
 
   /**
@@ -59,7 +58,7 @@ export abstract class AbstractLogger {
    *        When {@link this.className} isn't null, the value will be ignored.
    */
   public debug(message: string, classLogged?: string) {
-    this.log(ELogLevel.DEBUG, message, this.className || classLogged)
+    this.log(ELogLevel.DEBUG, message, this.className || classLogged);
   }
 
   /**
@@ -69,9 +68,8 @@ export abstract class AbstractLogger {
    *        When {@link this.className} isn't null, the value will be ignored.
    */
   public verbose(message: string, classLogged?: string) {
-    this.log(ELogLevel.VERBOSE, message, this.className || classLogged)
+    this.log(ELogLevel.VERBOSE, message, this.className || classLogged);
   }
-
 
   /**
    * Initialize logger api methods dynamically.
@@ -93,6 +91,4 @@ export abstract class AbstractLogger {
    */
   public abstract get className(): string;
   public abstract set className(value: string);
-
 }
-

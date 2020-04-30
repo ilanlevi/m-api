@@ -1,8 +1,5 @@
-schema: ./src/graphql/schema/genereator-schema.ts
-documents: []
-overwrite: true
+schema: ./src/graphql/type-defs.ts
 generates:
   ./src/interfaces/types.d.ts:
     plugins:
       - typescript
-require: []
