@@ -15,6 +15,6 @@ export default gql`
 
   # the schema allows the following query:
   type Query {
-    human(mapType: String, lastUpdated: Float!): [Human]
+    human(mapType: String!, lastUpdated: Float): [Human]
   }
 `;
