@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "dist",
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "paths": {
+      "src/*": ["./src/*"]
+    },
+    "lib": ["es2017", "dom", "esnext.asynciterable"]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}
