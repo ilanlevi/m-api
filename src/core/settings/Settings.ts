@@ -11,24 +11,21 @@ export default class Settings extends AbstractSetting {
     this.initServices();
   }
 
+  /* Overrides */
 
   protected initAuthConfig() {
-    const configValues = this.readConfigOrDefault(DEFAULT_AUTH_CONFIG_NAME, DEFAULT_AUTH_CONFIG);
-    Object.assign(this._authConfig, configValues);
+    this._authConfig = this.readConfigOrDefault(DEFAULT_AUTH_CONFIG_NAME, DEFAULT_AUTH_CONFIG);
   }
 
   protected initLoggerConfig() {
-    const configValues = this.readConfigOrDefault(DEFAULT_LOGGER_CONFIG_NAME, DEFAULT_LOGGER_CONFIG);
-    Object.assign(this._loggerConfig, configValues);
+    this._loggerConfig =  this.readConfigOrDefault(DEFAULT_LOGGER_CONFIG_NAME, DEFAULT_LOGGER_CONFIG);
   }
 
   protected initRedisConfig() {
-    const configValues = this.readConfigOrDefault(DEFAULT_REDIS_CONFIG_NAME, DEFAULT_REDIS_CONFIG);
-    Object.assign(this._redisConfig, configValues);
+    this._redisConfig = this.readConfigOrDefault(DEFAULT_REDIS_CONFIG_NAME, DEFAULT_REDIS_CONFIG);
   }
 
   protected initServerConfig() {
-    const configValues = this.readConfigOrDefault(DEFAULT_SERVER_CONFIG_NAME, DEFAULT_SERVER_CONFIG);
-    Object.assign(this._redisConfig, configValues);
+    this._serverConfig = this.readConfigOrDefault(DEFAULT_SERVER_CONFIG_NAME, DEFAULT_SERVER_CONFIG);
   }
 }

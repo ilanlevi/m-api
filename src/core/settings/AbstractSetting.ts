@@ -4,7 +4,6 @@ import {ILoggerConfig} from "src/core/config_types/ILoggerConfig";
 import {IRedisConfig} from "src/core/config_types/IRedisConfig";
 
 export default abstract class AbstractSetting {
-
   protected _serverConfig: IServerConfig;
   protected _authConfig: IAuthConfig;
   protected _loggerConfig: ILoggerConfig;
@@ -26,26 +25,25 @@ export default abstract class AbstractSetting {
    * Return object with settings, from process env variables or from default values (if given).
    * The method will go over all of the settings properties and try to fill it with values
    * @param configName setting name as env process
-   * @param configValues the settings values defined
    * @param defaultsValues the default settings class object
    *
    * @returns config object
    */
-  protected readConfigOrDefault<T>(configName:string, defaultsValues: T){
+  protected readConfigOrDefault<T>(configName:string, defaultsValues: T) : T{
     if (!process.env[configName]) {
       console.warn(`Cannot read process.env[${configName}]! Using default!`)
 
       return defaultsValues;
     }
 
-    const configValues = {};
+    const configValues = {} ;
     Object.keys(defaultsValues).forEach(keyName => {
       configValues[keyName] = process.env[configName][keyName] || defaultsValues?.[keyName];
     });
 
     console.info(`Settings for ${configName} is: \n${configValues}`)
 
-    return configValues;
+    return configValues as T;
   }
 
   /* Abstracts */

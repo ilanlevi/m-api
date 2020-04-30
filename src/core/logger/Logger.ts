@@ -2,24 +2,24 @@ import * as fs from 'fs'
 import * as  Winston from 'winston'
 import * as WinstonUDPTransport from 'winston-udp'
 
-import { AbstractLogger } from './AbstractLogger';
+import {AbstractLogger} from './AbstractLogger';
 import {ENetProtocol, MY_LOGGER_FORMAT} from "src/core/config_types/ILoggerConfig";
 import AbstractSetting from "src/core/settings/AbstractSetting";
 
-export class Logger extends AbstractLogger {
+export default class Logger extends AbstractLogger {
   private logger: Winston.Logger;
 
-  constructor(private setting: AbstractSetting) {
+  constructor(private setting: AbstractSetting, protected _loggerClassName?: string) {
     super();
     this.initService();
   }
 
-  // override
-  public log(level: string, message: string, classLogged?: any, ) {
+  /* Overrides */
+
+  protected log(level: string, message: string, classLogged?: any,) {
     this.logger.log(level.toLowerCase(), message)
   }
 
-  // override
   protected checkForLogFileDir() {
     const dir = this.setting.loggerConfig.fileDir;
 
@@ -28,7 +28,6 @@ export class Logger extends AbstractLogger {
     }
   }
 
-  // override
   protected initializeLogger() {
     this.logger = Winston.createLogger({
       level: this.setting.loggerConfig.logLevel,
@@ -49,7 +48,7 @@ export class Logger extends AbstractLogger {
       ]
     });
 
-    if(this.setting.loggerConfig.externalLoggerConfig){
+    if (this.setting.loggerConfig.externalLoggerConfig) {
       this.addExternalLogger();
     }
 
@@ -70,5 +69,13 @@ export class Logger extends AbstractLogger {
       };
       this.logger.transports.push(new WinstonUDPTransport.transports.UDP(udpSettings));
     }
+  }
+
+  get className(): string {
+    return this._loggerClassName;
+  }
+
+  set className(value: string) {
+    this._loggerClassName = value;
   }
 }
