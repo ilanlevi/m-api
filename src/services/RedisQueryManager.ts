@@ -10,6 +10,9 @@ export default class RedisQueryManager {
   }
 
   public async queryRedis<T>(queryMapName: string, mapType: string, lastRequested?: number): Promise<T[]> {
+    this._logger.info(
+      `Received query! \tType: ${queryMapName}, \tmapType: ${mapType},\tlastRequested: ${lastRequested}`,
+    );
     return this.connector.queryForRedis(queryMapName, mapType, lastRequested);
   }
 }

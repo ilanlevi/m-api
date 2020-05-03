@@ -1,4 +1,4 @@
-import { QueryHumanArgs, HumanEntity, Human } from 'src/interfaces/types.d';
+import { QueryHumanArgs, HumanEntity} from 'src/interfaces/types.d';
 import IAppContext from 'src/interfaces/IAppContext';
 
 const QUERY_NAME = 'human';
