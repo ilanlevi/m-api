@@ -47,6 +47,8 @@ export default class RedisConnector extends AbstractRedisConnection {
     const connectionMode = ERedisConnectionMode[this._setting.redisConfig.connectionMode];
 
     this._redis = redisTypeFromConfigMapping(connectionMode, this._setting, redisDriverOptions);
+    // todo: remove
+    this._logger.info(`Redis connection: ${this._redis}`);
   }
 
   public async queryForRedis<T>(queryMapName: string, mapType: string, lastRequested?: number): Promise<T[]> {
@@ -77,6 +79,6 @@ export default class RedisConnector extends AbstractRedisConnection {
       this._logger.error(`Query to ${fullQuery} failed! Took: ${totalTime} ms.`);
       this._logger.error(`Reason: ${error}`);
     }
-    return null;
+    return [];
   }
 }

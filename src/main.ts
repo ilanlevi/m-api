@@ -7,14 +7,12 @@ import typeDefs from 'src/graphql/type-defs';
 
 import Logger from 'src/core/logger/Logger';
 import Settings from 'src/core/settings/Settings';
-import RedisConnector from 'src/data/connector/RedisConnector';
 import RedisQueryManager from 'src/services/RedisQueryManager';
 
 const app = express();
 const settings = new Settings();
 const logger = new Logger(settings);
-const redisConnector = new RedisConnector(settings);
-const redisManager = new RedisQueryManager(settings, redisConnector);
+const redisManager = new RedisQueryManager(settings);
 
 app.use(cors());
 // Should be removed when apollo-server supports offline playground
@@ -28,6 +26,7 @@ const server = new ApolloServer({
   typeDefs,
   context: {
     redisManager,
+    settings,
   },
   playground: {
     cdnUrl: '.',

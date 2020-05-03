@@ -1,7 +1,7 @@
 import * as Redis from 'ioredis';
 
 import AbstractSetting from 'src/core/settings/AbstractSetting';
-import Logger from 'src/core/logger/Logger';
+import { AbstractLogger } from 'src/core/logger/AbstractLogger';
 
 export abstract class AbstractRedisConnection {
   /**
@@ -13,7 +13,7 @@ export abstract class AbstractRedisConnection {
   /**
    * class logger instance
    */
-  protected _logger: Logger;
+  protected _logger: AbstractLogger;
 
   /**
    * application settings

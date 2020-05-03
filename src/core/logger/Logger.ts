@@ -30,7 +30,7 @@ export default class Logger extends AbstractLogger {
 
   protected initializeLogger() {
     this.logger = Winston.createLogger({
-      level: this.setting.loggerConfig.logLevel,
+      level: this.setting.loggerConfig.logLevel.toLowerCase(),
       format: Winston.format.combine(Winston.format.colorize(), Winston.format.timestamp(), MY_LOGGER_FORMAT),
       transports: [
         new Winston.transports.Console(), // write to console
