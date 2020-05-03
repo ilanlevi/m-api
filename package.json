@@ -4,6 +4,7 @@
   "description": "graphql redis connection client",
   "main": "src/main.ts",
   "scripts": {
+    "debug": "node --inspect-brk dist/main.js",
     "clean": "rimraf dist",
     "start": "node dist/main.js",
     "generate": "graphql-codegen",
@@ -28,7 +29,8 @@
     "eslint-plugin-prettier": "3.1.2",
     "graphql-playground-react": "1.7.20",
     "prettier": "1.19.1",
-    "typescript": "3.7.5"
+    "typescript": "3.7.5",
+    "nodemon": "2.0.3"
   },
   "dependencies": {
     "apollo-server": "2.9.16",
@@ -42,7 +44,8 @@
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^4.4.1",
     "winston-udp": "0.0.7",
-    "ioredis": "4.16.3"
+    "ioredis": "4.16.3",
+    "fartsampler": "0.1.5"
   },
   "_moduleAliases": {
     "src": "dist"
