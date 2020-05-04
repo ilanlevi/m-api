@@ -1,7 +1,6 @@
 import AbstractSetting from 'src/core/settings/AbstractSetting';
 import Logger from 'src/core/logger/Logger';
 import { AbstractRedisConnection } from 'src/data/connector/AbstractRedisConnection';
-import { ERedisConnectionMode } from 'src/core/config_types/IRedisConfig';
 import { redisTypeFromConfigMapping } from 'src/data/connector/RedisConnectionCreator';
 import CollectionPerformances from 'src/entities/CollectionPerformances';
 import { ECounterMetrics, EHistogramMetrics, ETimerMetrics } from 'src/entities/EAllMetrics';
@@ -15,7 +14,11 @@ export default class RedisConnector extends AbstractRedisConnection {
     super();
 
     this._logger = new Logger(this._setting, this.constructor.name);
-    this._performanceSampler = new CollectionPerformances(this._setting.serverConfig.appName, this.constructor.name);
+    this._performanceSampler = new CollectionPerformances(
+      this._setting.serverConfig.activatePerformanceSampler,
+      this._setting.serverConfig.appName,
+      this.constructor.name,
+    );
     this.initializeRedisConnection();
     this.addCallbacks();
   }
@@ -44,9 +47,11 @@ export default class RedisConnector extends AbstractRedisConnection {
       showFriendlyErrorStack: redisConf.showFriendlyErrorStack,
     };
 
-    const connectionMode = ERedisConnectionMode[this._setting.redisConfig.connectionMode];
-
-    this._redis = redisTypeFromConfigMapping(connectionMode, this._setting, redisDriverOptions);
+    this._redis = redisTypeFromConfigMapping(
+      this._setting.redisConfig.connectionMode,
+      this._setting,
+      redisDriverOptions,
+    );
     // todo: remove
     this._logger.info(`Redis connection: ${this._redis}`);
   }

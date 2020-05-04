@@ -9,10 +9,9 @@ export default class CollectionPerformances {
   private _metricKey: metricKey;
   private _performanceSampler: PerformanceSampler;
 
-  constructor(private _sendMetrics : boolean, private _envFullName: string, private _className: string) {
+  constructor(private _sendMetrics: boolean, private _envFullName: string, private _className: string) {
     this._metricKey = CollectionPerformances.createMetricForCollection(_envFullName, _className);
-    if (_sendMetrics)
-      this._performanceSampler = new PerformanceSampler();
+    if (_sendMetrics) this._performanceSampler = new PerformanceSampler();
   }
 
   /* api */
@@ -26,8 +25,7 @@ export default class CollectionPerformances {
   }
 
   private updateCounter(counterType: ECounterMetrics, count: number) {
-    if(!this._sendMetrics)
-      return;
+    if (!this._sendMetrics) return;
     const metricName = ECounterMetrics[counterType];
     if (!counterType) {
       console.error(`Cannot get metric name in: updateCounter (value = ${count}), ignoring measurement!`);
@@ -41,8 +39,7 @@ export default class CollectionPerformances {
   }
 
   public updateHistogram(histogramType: EHistogramMetrics, value: number) {
-    if(!this._sendMetrics)
-      return;
+    if (!this._sendMetrics) return;
     const metricName = EHistogramMetrics[histogramType];
     if (!metricName) {
       console.error(`Cannot get metric name in: updateHistogram (value = ${value}), ignoring measurement!`);
@@ -56,8 +53,7 @@ export default class CollectionPerformances {
   }
 
   public startTimer(timerType: ETimerMetrics) {
-    if(!this._sendMetrics)
-      return null;
+    if (!this._sendMetrics) return null;
 
     const metricName = ETimerMetrics[timerType];
     if (!metricName) {
@@ -72,13 +68,12 @@ export default class CollectionPerformances {
   }
 
   public stopTimer(context: Metrics.TimerContext) {
-    if(!this._sendMetrics || !context)
-      return;
-      try {
-        return PerformanceSampler.stopTimer(context);
-      } catch (e) {
-        console.error(`error in stopTimer!\n${e}`);
-      }
+    if (!this._sendMetrics || !context) return;
+    try {
+      return PerformanceSampler.stopTimer(context);
+    } catch (e) {
+      console.error(`error in stopTimer!\n${e}`);
+    }
   }
 
   /* Getters & Setters */
@@ -95,12 +90,12 @@ export default class CollectionPerformances {
     return this._className;
   }
 
-  public setEnvFullName(value: string) : CollectionPerformances {
+  public setEnvFullName(value: string): CollectionPerformances {
     this._envFullName = value;
     return this;
   }
 
-  public setClassName(value: string) : CollectionPerformances {
+  public setClassName(value: string): CollectionPerformances {
     this._className = value;
     return this;
   }

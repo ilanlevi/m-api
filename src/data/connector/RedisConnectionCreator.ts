@@ -1,7 +1,7 @@
 import * as Redis from 'ioredis';
 
 import AbstractSetting from 'src/core/settings/AbstractSetting';
-import { EPreferredConnectionType, ERedisConnectionMode } from 'src/core/config_types/IRedisConfig';
+import {EPreferredConnectionType, ERedisConnectionMode} from 'src/core/config_types/IRedisConfig';
 
 export interface IRedisTypeFromConfig {
   /**
@@ -36,7 +36,7 @@ export class SingleRedisNode implements IRedisTypeFromConfig {
       options: redisOptions,
     };
 
-    return Redis(redisOptionsWithHost);
+    return new Redis(redisOptionsWithHost);
   }
 }
 
@@ -53,14 +53,7 @@ export class SentinelsRedis implements IRedisTypeFromConfig {
    * @return Redis object or null if raised any error
    */
   fromConnectionMode(setting: AbstractSetting, redisOptions) {
-    const sentinels = [];
-
-    for (let i = 0; i < setting.redisConfig.ports.length; i++) {
-      sentinels.push({
-        host: setting.redisConfig.hosts[i],
-        port: setting.redisConfig.ports[i],
-      });
-    }
+    const sentinels = extractServerAndPorts(setting);
 
     // check (value -> name -> value) mapping
     redisOptions.role = EPreferredConnectionType[EPreferredConnectionType[setting.redisConfig.preferredType]];
@@ -70,9 +63,10 @@ export class SentinelsRedis implements IRedisTypeFromConfig {
       options: redisOptions,
     };
 
-    return Redis(redisOptionsWithHost);
+    return new Redis(redisOptionsWithHost);
   }
 }
+
 
 export class ClusterRedis implements IRedisTypeFromConfig {
   /**
@@ -88,19 +82,12 @@ export class ClusterRedis implements IRedisTypeFromConfig {
    * @return Redis object or null if raised any error
    */
   fromConnectionMode(setting: AbstractSetting, redisOptions) {
-    const clusterNodes = [];
-
-    for (let i = 0; i < setting.redisConfig.ports.length; i++) {
-      clusterNodes.push({
-        host: setting.redisConfig.hosts[i],
-        port: setting.redisConfig.ports[i],
-      });
-    }
+    const clusterNodes = extractServerAndPorts(setting);
 
     // check (value -> name -> value) mapping
     redisOptions.scaleReads = EPreferredConnectionType[EPreferredConnectionType[setting.redisConfig.preferredType]];
 
-    return Redis.Cluster(clusterNodes, {
+    return new Redis.Cluster(clusterNodes, {
       redisOptions: redisOptions,
     });
   }
@@ -109,11 +96,31 @@ export class ClusterRedis implements IRedisTypeFromConfig {
 /**
  * Create static mapping between the ERedisConnectionMode and the connection initialization
  */
-const redisConfigMapping = new Map<ERedisConnectionMode, IRedisTypeFromConfig>();
+const redisConfigMapping = new Map<string, IRedisTypeFromConfig>();
 
 redisConfigMapping.set(ERedisConnectionMode.CLUSTER, new ClusterRedis());
 redisConfigMapping.set(ERedisConnectionMode.SENTINEL, new SentinelsRedis());
 redisConfigMapping.set(ERedisConnectionMode.SINGLE_SERVER, new SingleRedisNode());
+
+
+/**
+ * Extract server and ports from config (for clusters)
+ *
+ * @param setting The app's redis config
+ * @return Nodes array every object will have: {host, port}
+ */
+function extractServerAndPorts(setting: AbstractSetting) {
+  const nodesArray = [];
+
+  for (let i = 0; i < setting.redisConfig.ports.length; i++) {
+    nodesArray.push({
+      host: setting.redisConfig.hosts[i],
+      port: setting.redisConfig.ports[i],
+    });
+  }
+
+  return nodesArray;
+}
 
 /**
  * Export the {@link redisConfigMapping} values
@@ -124,10 +131,6 @@ redisConfigMapping.set(ERedisConnectionMode.SINGLE_SERVER, new SingleRedisNode()
  *
  * @return Redis object or null if raised any error
  */
-export function redisTypeFromConfigMapping(
-  connectionMode: ERedisConnectionMode,
-  setting: AbstractSetting,
-  redisOptions,
-) {
+export function redisTypeFromConfigMapping(connectionMode: string, setting: AbstractSetting, redisOptions) {
   return redisConfigMapping.get(connectionMode)?.fromConnectionMode(setting, redisOptions);
 }

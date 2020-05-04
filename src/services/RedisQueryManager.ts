@@ -11,7 +11,11 @@ export default class RedisQueryManager {
   constructor(private _settings: AbstractSetting) {
     this._logger = new Logger(this._settings, RedisQueryManager.name);
     this._connector = new RedisConnector(this._settings);
-    this._performanceSampler = new CollectionPerformances(this._settings.serverConfig.appName, this.constructor.name);
+    this._performanceSampler = new CollectionPerformances(
+      this._settings.serverConfig.activatePerformanceSampler,
+      this._settings.serverConfig.appName,
+      this.constructor.name,
+    );
   }
 
   public async queryRedis<T>(queryMapName: string, mapType: string, lastRequested?: number): Promise<T[]> {
