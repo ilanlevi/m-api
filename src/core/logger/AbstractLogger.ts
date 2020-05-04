@@ -4,6 +4,8 @@
 import { ELogLevel } from 'src/core/config_types/ILoggerConfig';
 
 export abstract class AbstractLogger {
+  protected _className: string;
+
   /**
    * Init service from settings
    */
@@ -38,7 +40,7 @@ export abstract class AbstractLogger {
    *        When {@link this.className} isn't null, the value will be ignored.
    */
   public error(message: string, classLogged?: string) {
-    this.log(ELogLevel.ERROR, message, this.className || classLogged);
+    this.log(ELogLevel.ERROR, message, this._className || classLogged);
   }
 
   /**
@@ -89,6 +91,12 @@ export abstract class AbstractLogger {
   /**
    * Getter and Setter for the class name that holds this logger
    */
-  public abstract get className(): string;
-  public abstract set className(value: string);
+
+  public get className(): string {
+    return this._className;
+  }
+
+  protected setClassName(value: string) {
+    this._className = value;
+  }
 }

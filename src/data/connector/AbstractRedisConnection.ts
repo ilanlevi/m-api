@@ -97,8 +97,7 @@ export abstract class AbstractRedisConnection {
     }
 
     this._redis.connect(() => {
-      this._logger.info('Redis is connected! (more data on debug)');
-      this._logger.debug(this._redis);
+      this._logger.info('Redis is connected!');
       this._performanceSampler?.increaseCounter(ECounterMetrics.REDIS_CONNECTED_COUNTER);
     });
 

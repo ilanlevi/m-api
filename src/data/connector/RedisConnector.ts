@@ -16,8 +16,7 @@ export default class RedisConnector extends AbstractRedisConnection {
     this._logger = new Logger(this._setting, 'RedisConnector');
     this._performanceSampler = new CollectionPerformances(
       this._setting.serverConfig.activatePerformanceSampler,
-      this._setting.serverConfig.appName,
-      this.constructor.name,
+      'RedisConnector',
     );
     this.initializeRedisConnection();
     this.addCallbacks();
@@ -83,11 +82,11 @@ export default class RedisConnector extends AbstractRedisConnection {
     }
   }
 
-  public async queryForRedis<T>(queryMapName: string, mapType: string, lastRequested?: number): Promise<T[]> {
-    const fullQuery = `${queryMapName}_${mapType}`;
+  public async queryForRedis<T>(collectionName: string, envName: string, lastRequested?: number): Promise<T[]> {
+    const fullQuery = `${collectionName}_${envName}`;
     const startedTime = new Date();
 
-    this._performanceSampler?.increaseCounter(ECounterMetrics.REQUESTS_TO_DB);
+    this._performanceSampler?.increaseCounter(ECounterMetrics.REQUESTS_TO_DB, envName, collectionName);
 
     try {
       // copy logic from the other source
@@ -97,7 +96,11 @@ export default class RedisConnector extends AbstractRedisConnection {
         return null;
       }
 
-      const requestTimer = this._performanceSampler?.startTimer(ETimerMetrics.REQUESTS_TO_DB_TIMER);
+      const requestTimer = this._performanceSampler?.startTimer(
+        ETimerMetrics.REQUESTS_TO_DB_TIMER,
+        envName,
+        collectionName,
+      );
       const queryResult = await this._redis.hgetall(fullQuery, (err, result) => {
         const totalTime = new Date().getMilliseconds() - startedTime.getMilliseconds();
         if (err) {
@@ -107,15 +110,15 @@ export default class RedisConnector extends AbstractRedisConnection {
         this._logger.info(
           `Query to ${fullQuery} ${lastRequested ? ' (with lastRequested) ' : ''} took: ${totalTime} ms.`,
         );
-        this._performanceSampler?.increaseCounter(ECounterMetrics.REQUESTS_TO_DB_SUCCESS);
+        this._performanceSampler?.increaseCounter(ECounterMetrics.REQUESTS_TO_DB_SUCCESS, envName, collectionName);
         return result;
       });
 
-      this._performanceSampler?.increaseCounter(ECounterMetrics.REQUESTS_TO_DB_FAILED);
+      this._performanceSampler?.increaseCounter(ECounterMetrics.REQUESTS_TO_DB_FAILED, envName, collectionName);
       this._performanceSampler?.stopTimer(requestTimer);
 
       const querySize = queryResult ? Object.keys(queryResult).length : 0;
-      this._performanceSampler?.updateHistogram(EHistogramMetrics.COLLECTION_SIZE, querySize);
+      this._performanceSampler?.updateHistogram(EHistogramMetrics.COLLECTION_SIZE, querySize, envName, collectionName);
 
       const valuesOnly = [];
       Object.values(queryResult).forEach(value => valuesOnly.push(JSON.parse(value.toString())));

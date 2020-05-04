@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as Winston from 'winston';
+import Logger from 'src/core/logger/Logger';
 
 /**
  * External logger settings (for something like Kibana)
@@ -48,11 +49,16 @@ export enum ELogLevel {
 
 // the config name environment variable
 export const DEFAULT_LOGGER_CONFIG_NAME = 'logger';
+export const LOGGER_META = '0';
+export const DEFAULT_META = '';
 
 /**
  * Logger format
  */
-export const MY_LOGGER_FORMAT = Winston.format.printf(({ level, message, classLogged, timestamp }) => {
+export const MY_LOGGER_FORMAT = Winston.format.printf(info => {
+  const { level, message, timestamp } = info;
+  const classLogged = info[LOGGER_META] || DEFAULT_META;
+
   return `${timestamp} [${level}]: (${classLogged}) -> ${message}`;
 });
 

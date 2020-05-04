@@ -3,6 +3,7 @@ import AbstractSetting from 'src/core/settings/AbstractSetting';
 import Logger from 'src/core/logger/Logger';
 import CollectionPerformances from 'src/entities/CollectionPerformances';
 import HumanCreator from 'src/services/HumanCreator';
+import { ETimerMetrics } from 'src/entities/EAllMetrics';
 
 // todo: delete (just for testing)
 const NUM_OF_HUMAN = 10;
@@ -10,29 +11,24 @@ const NUM_OF_HUMAN = 10;
 export default class RedisQueryManager {
   private _logger: Logger;
   private _connector: RedisConnector;
-  private _performanceSampler: CollectionPerformances;
 
   constructor(private _settings: AbstractSetting) {
     this._logger = new Logger(this._settings, 'RedisQueryManager');
     this._connector = new RedisConnector(this._settings);
-    this._performanceSampler = new CollectionPerformances(
-      this._settings.serverConfig.activatePerformanceSampler,
-      this._settings.serverConfig.appName,
-      this.constructor.name,
-    );
   }
 
-  public async queryRedis<T>(queryMapName: string, mapType: string, lastRequested?: number): Promise<T[]> {
+  public async queryRedis<T>(collectionName: string, envName: string, lastRequested?: number): Promise<T[]> {
     // todo: delete (just for testing)
     if (this._settings.serverConfig.createDummyDb) {
-      await this.initRedis(queryMapName, mapType);
+      await this.initRedis(collectionName, envName);
       this._settings.serverConfig.createDummyDb = false;
     }
-    console.info(`got request!`);
+
     this._logger.info(
-      `Received query! \tType: ${queryMapName}, \tmapType: ${mapType},\tlastRequested: ${lastRequested}`,
+      `Received query! \tType: ${collectionName}, \tmapType: ${envName},\tlastRequested: ${lastRequested}`,
     );
-    return this._connector.queryForRedis(queryMapName, mapType, lastRequested);
+
+    return this._connector.queryForRedis(collectionName, envName, lastRequested);
   }
 
   // todo: delete (just for testing)

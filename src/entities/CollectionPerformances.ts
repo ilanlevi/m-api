@@ -3,28 +3,34 @@ import Metrics from 'metrics';
 import { ECounterMetrics, EHistogramMetrics, ETimerMetrics } from 'src/entities/EAllMetrics';
 
 export const CLASS_NAME_TAG = 'className';
+export const COLLECTION_NAME = 'collectionName';
 export const ENV_NAME_TAG = 'envFullName';
 
 export default class CollectionPerformances {
   private _metricKey: metricKey;
   private _performanceSampler: PerformanceSampler;
 
-  constructor(private _sendMetrics: boolean, private _envFullName: string, private _className: string) {
-    this._metricKey = CollectionPerformances.createMetricForCollection(_envFullName, _className);
+  constructor(private _sendMetrics: boolean, private _className: string) {
+    this._metricKey = new metricKey().addTag(CLASS_NAME_TAG, _className);
     if (_sendMetrics) this._performanceSampler = new PerformanceSampler();
   }
 
   /* api */
 
-  public increaseCounter(counterType: ECounterMetrics) {
-    this.updateCounter(counterType, 1);
+  public increaseCounter(counterType: ECounterMetrics, envFullName: string = null, collectionName: string = null) {
+    this.updateCounter(counterType, 1, envFullName, collectionName);
   }
 
-  public decreaseCounter(counterType: ECounterMetrics) {
-    this.updateCounter(counterType, -1);
+  public decreaseCounter(counterType: ECounterMetrics, envFullName: string = null, collectionName: string = null) {
+    this.updateCounter(counterType, -1, envFullName, collectionName);
   }
 
-  private updateCounter(counterType: ECounterMetrics, count: number) {
+  private updateCounter(
+    counterType: ECounterMetrics,
+    count: number,
+    envFullName: string = null,
+    collectionName: string = null,
+  ) {
     if (!this._sendMetrics) return;
     const metricName = ECounterMetrics[counterType];
     if (!counterType) {
@@ -32,13 +38,18 @@ export default class CollectionPerformances {
       return;
     }
     try {
-      PerformanceSampler.increaseCounter(this._metricKey.getFullName(metricName), count);
+      PerformanceSampler.increaseCounter(this.appendToMetricName(metricName, envFullName, collectionName), count);
     } catch (e) {
       console.error(`error in updateCounter!\n${e}`);
     }
   }
 
-  public updateHistogram(histogramType: EHistogramMetrics, value: number) {
+  public updateHistogram(
+    histogramType: EHistogramMetrics,
+    value: number,
+    envFullName: string = null,
+    collectionName: string = null,
+  ) {
     if (!this._sendMetrics) return;
     const metricName = EHistogramMetrics[histogramType];
     if (!metricName) {
@@ -46,13 +57,13 @@ export default class CollectionPerformances {
       return;
     }
     try {
-      PerformanceSampler.updateHistogram(this._metricKey.getFullName(metricName), value);
+      PerformanceSampler.updateHistogram(this.appendToMetricName(metricName, envFullName, collectionName), value);
     } catch (e) {
       console.error(`error in updateHistogram!\n${e}`);
     }
   }
 
-  public startTimer(timerType: ETimerMetrics) {
+  public startTimer(timerType: ETimerMetrics, envFullName: string = null, collectionName: string = null) {
     if (!this._sendMetrics) return null;
 
     const metricName = ETimerMetrics[timerType];
@@ -61,7 +72,7 @@ export default class CollectionPerformances {
       return null;
     }
     try {
-      return PerformanceSampler.startTimer(this._metricKey.getFullName(metricName));
+      return PerformanceSampler.startTimer(this.appendToMetricName(metricName, envFullName, collectionName));
     } catch (e) {
       console.error(`error in startTimer!\n${e}`);
     }
@@ -76,38 +87,22 @@ export default class CollectionPerformances {
     }
   }
 
-  /* Getters & Setters */
-
-  get sendMetrics(): boolean {
-    return this._sendMetrics;
-  }
-
-  get envFullName(): string {
-    return this._envFullName;
-  }
-
-  get className(): string {
-    return this._className;
-  }
-
-  public setEnvFullName(value: string): CollectionPerformances {
-    this._envFullName = value;
-    return this;
-  }
-
-  public setClassName(value: string): CollectionPerformances {
-    this._className = value;
-    return this;
-  }
-
   /**
-   * Create basic metric key for influx db with my specific default tags.
+   * Return json of full metric name
    *
-   * @param className value for {@link CLASS_NAME_TAG} tag.
-   * @param envFullName value for {@link ENV_NAME_TAG} tag.
-   * @return new entity of type: {@link metricKey}.
+   * @param metricName metric name in string
+   * @param envFullName optional value for adding {@link ENV_NAME_TAG} (default will not add this property)
+   * @param collectionName optional value for adding {@link COLLECTION_NAME} (default will not add this property)
+   *
+   * @return json object that represent a metric name in influx
    */
-  public static createMetricForCollection(envFullName: string, className: string): metricKey {
-    return new metricKey().addTag(CLASS_NAME_TAG, className).addTag(ENV_NAME_TAG, envFullName);
+  private appendToMetricName(metricName: string, envFullName: string = null, collectionName: string = null): Object {
+    const finalMetricName = this._metricKey.getFullName(metricName);
+
+    // optional add
+    if (envFullName) finalMetricName[ENV_NAME_TAG] = envFullName;
+    if (collectionName) finalMetricName[COLLECTION_NAME] = collectionName;
+
+    return finalMetricName;
   }
 }
