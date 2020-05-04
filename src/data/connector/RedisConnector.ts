@@ -121,7 +121,7 @@ export default class RedisConnector extends AbstractRedisConnection {
       Object.values(queryResult).forEach(value => valuesOnly.push(JSON.parse(value.toString())));
 
       this._logger.info(`Query to ${fullQuery} resultSize is: ${valuesOnly.length}`);
-      this._logger.debug(`${fullQuery} query result: (length = ${querySize}):\n${valuesOnly}`);
+      this._logger.debug(`${fullQuery} query result: (length = ${querySize}):\n${queryResult}`);
 
       return valuesOnly as T[];
     } catch (error) {
