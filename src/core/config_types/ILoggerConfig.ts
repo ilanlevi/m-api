@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as Winston from 'winston';
+import Logger from 'src/core/logger/Logger';
 
 /**
  * External logger settings (for something like Kibana)
@@ -48,19 +49,17 @@ export enum ELogLevel {
 
 // the config name environment variable
 export const DEFAULT_LOGGER_CONFIG_NAME = 'logger';
+export const LOGGER_META = '0';
+export const DEFAULT_META = '';
 
 /**
  * Logger format
  */
-export const MY_LOGGER_FORMAT = Winston.format.printf(({ level, message, classLogged, timestamp }) => {
-  // todo: remove test
-  if (classLogged) {
-    const msg = `${timestamp} [${level}]: (${classLogged}) -> ${message}`;
-    console.info(`blabla\n${msg}`);
-    return msg;
-  }
-  console.info(`${timestamp} [${level}]: ${message}`);
-  return `${timestamp} [${level}]: ${message}`;
+export const MY_LOGGER_FORMAT = Winston.format.printf(info => {
+  const { level, message, timestamp } = info;
+  const classLogged = info[LOGGER_META] || DEFAULT_META;
+
+  return `${timestamp} [${level}]: (${classLogged}) -> ${message}`;
 });
 
 /**
@@ -70,7 +69,7 @@ export const DEFAULT_LOGGER_FILE_DIR = path.join(__dirname, '../../logger/');
 export const DEFAULT_LOGGER_FILE_NAME = 'myapp.log';
 export const DEFAULT_LOG_FILE_MAX_SIZE = 20 * 1024 * 1024; // 20 MB
 export const DEFAULT_LOG_FILE_MAX_FILES = 10;
-export const DEFAULT_LOG_LEVEL = ELogLevel.INFO;
+export const DEFAULT_LOG_LEVEL = ELogLevel.DEBUG;
 
 // default values
 export const DEFAULT_LOGGER_CONFIG: ILoggerConfig = {

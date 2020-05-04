@@ -50,7 +50,7 @@ export const DEFAULT_REDIS_CONFIG_NAME = 'redis';
 /**
  * Redis connection defaults
  */
-export const DEFAULT_REDIS_SERVER_HOST_NAME = ['localhost'];
+export const DEFAULT_REDIS_SERVER_HOST_NAME = ['192.168.0.107'];
 export const DEFAULT_REDIS_SINGLE_SERVER_PORT = ['6379'];
 export const DEFAULT_REDIS_SENTINEL_SERVER_PORT = ['26379'];
 export const DEFAULT_REDIS_DB_NAME = 'mymaster';

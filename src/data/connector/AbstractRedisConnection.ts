@@ -1,14 +1,16 @@
-import * as Redis from 'ioredis';
+import Redis from 'ioredis';
 
 import AbstractSetting from 'src/core/settings/AbstractSetting';
 import { AbstractLogger } from 'src/core/logger/AbstractLogger';
+import CollectionPerformances from 'src/entities/CollectionPerformances';
+import { ECounterMetrics } from 'src/entities/EAllMetrics';
 
 export abstract class AbstractRedisConnection {
   /**
    * io-redis driver instance
    *  - For more data: {@link https://github.com/luin/ioredis/blob/master/API.md#Commander}
    */
-  protected _redis: Redis;
+  protected _redis: Redis.Redis;
 
   /**
    * class logger instance
@@ -20,12 +22,12 @@ export abstract class AbstractRedisConnection {
    */
   protected _setting: AbstractSetting;
 
-  /* Abstracts  */
-
   /**
-   * Initialize {@link this._logger} from config
+   * performance monitor
    */
-  protected abstract initializeLogger();
+  protected _performanceSampler: CollectionPerformances;
+
+  /* Abstracts  */
 
   /**
    * Initialize {@link this._redis} connection from config.
@@ -61,6 +63,8 @@ export abstract class AbstractRedisConnection {
     this._logger?.error(`Redis is disconnected! Reconnect tries: ${timesReconnect}.
                 Retry in: ${this._setting.redisConfig.connectionTimeout} ms.`);
 
+    this._performanceSampler?.increaseCounter(ECounterMetrics.REDIS_RESET_CONNECTION_COUNTER);
+
     return this._setting.redisConfig.connectionTimeout;
   }
 
@@ -77,6 +81,8 @@ export abstract class AbstractRedisConnection {
         ${this._setting.redisConfig.reconnectOnError ? '' : ' not '}
         try to reconnect (check config)`);
 
+    this._performanceSampler?.increaseCounter(ECounterMetrics.ERROR_IN_REDIS_CONNECTION_COUNTER);
+
     return this._setting.redisConfig.reconnectOnError;
   }
 
@@ -86,12 +92,13 @@ export abstract class AbstractRedisConnection {
   protected addCallbacks() {
     if (!this._redis) {
       this._logger.error(`this._redis is NULL, retry again!`);
+      this._performanceSampler?.increaseCounter(ECounterMetrics.RECONNECT_ATTEMPTS_DB);
       return;
     }
 
     this._redis.connect(() => {
-      this._logger.info('Redis is connected! (more data on debug)');
-      this._logger.debug(this._redis);
+      this._logger.info('Redis is connected!');
+      this._performanceSampler?.increaseCounter(ECounterMetrics.REDIS_CONNECTED_COUNTER);
     });
 
     this._redis.monitor((err, monitor) => {

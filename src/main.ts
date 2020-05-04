@@ -11,7 +11,7 @@ import RedisQueryManager from 'src/services/RedisQueryManager';
 
 const app = express();
 const settings = new Settings();
-const logger = new Logger(settings);
+const logger = new Logger(settings, 'main');
 const redisManager = new RedisQueryManager(settings);
 
 app.use(cors());

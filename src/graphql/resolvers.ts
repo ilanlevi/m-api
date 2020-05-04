@@ -6,6 +6,7 @@ const QUERY_NAME = 'human';
 export default {
   Query: {
     human(parent: null, args: QueryHumanArgs, context: IAppContext): Promise<HumanEntity[]> {
+      console.info('got to resolvers.ts');
       return context.redisManager.queryRedis<HumanEntity>(QUERY_NAME, args.mapType, args.lastUpdated);
     },
   },
