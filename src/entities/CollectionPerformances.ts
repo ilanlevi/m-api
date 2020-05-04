@@ -31,8 +31,7 @@ export default class CollectionPerformances {
       return;
     }
     try {
-      // todo fix this after amiti update
-      PerformanceSampler.increaseCounter(this._metricKey.getFullName(metricName));
+      PerformanceSampler.increaseCounter(this._metricKey.getFullName(metricName), count);
     } catch (e) {
       console.error(`error in updateCounter!\n${e}`);
     }
