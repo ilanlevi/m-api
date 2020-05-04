@@ -63,7 +63,7 @@ export const DEFAULT_LOGGER_FILE_DIR = path.join(__dirname, '../../logger/');
 export const DEFAULT_LOGGER_FILE_NAME = 'myapp.log';
 export const DEFAULT_LOG_FILE_MAX_SIZE = 20 * 1024 * 1024; // 20 MB
 export const DEFAULT_LOG_FILE_MAX_FILES = 10;
-export const DEFAULT_LOG_LEVEL = ELogLevel.INFO;
+export const DEFAULT_LOG_LEVEL = ELogLevel.DEBUG;
 
 // default values
 export const DEFAULT_LOGGER_CONFIG: ILoggerConfig = {

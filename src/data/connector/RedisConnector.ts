@@ -13,7 +13,7 @@ export default class RedisConnector extends AbstractRedisConnection {
   constructor(protected _setting: AbstractSetting) {
     super();
 
-    this._logger = new Logger(this._setting, this.constructor.name);
+    this._logger = new Logger(this._setting, 'RedisConnector');
     this._performanceSampler = new CollectionPerformances(
       this._setting.serverConfig.activatePerformanceSampler,
       this._setting.serverConfig.appName,
@@ -52,8 +52,35 @@ export default class RedisConnector extends AbstractRedisConnection {
       this._setting,
       redisDriverOptions,
     );
-    // todo: remove
-    this._logger.info(`Redis connection: ${this._redis}`);
+
+    this._logger.info(`Redis connection: ${JSON.stringify(this._redis)}`);
+  }
+
+  public async addEntitiesOnRedis<T>(data: Map<string, T>, queryMapName: string, mapType: string) {
+    const fullCollectionName = `${queryMapName}_${mapType}`;
+
+    try {
+      // copy logic from the other source
+      if (!this._redis) {
+        this._logger.error(`Redis connection is null, reconnecting!`);
+        this.initializeRedisConnection();
+        return null;
+      }
+
+      const stringValues = new Map<string, string>();
+      const iterator = data.keys();
+      for (let i = 0; i < data.size; i++) {
+        const nextKey = iterator.next().value;
+        const stringValue = JSON.stringify(data.get(nextKey));
+
+        stringValues.set(nextKey, stringValue);
+      }
+
+      await this._redis.hmset(fullCollectionName, stringValues);
+    } catch (error) {
+      this._logger.error(`Writing Query to ${fullCollectionName} failed!`);
+      this._logger.error(`Reason: ${error}`);
+    }
   }
 
   public async queryForRedis<T>(queryMapName: string, mapType: string, lastRequested?: number): Promise<T[]> {
@@ -75,7 +102,7 @@ export default class RedisConnector extends AbstractRedisConnection {
         const totalTime = new Date().getMilliseconds() - startedTime.getMilliseconds();
         if (err) {
           this._logger.error(`Query to ${fullQuery} failed! Took: ${totalTime} ms.`);
-          return [];
+          return {};
         }
         this._logger.info(
           `Query to ${fullQuery} ${lastRequested ? ' (with lastRequested) ' : ''} took: ${totalTime} ms.`,
@@ -87,10 +114,16 @@ export default class RedisConnector extends AbstractRedisConnection {
       this._performanceSampler?.increaseCounter(ECounterMetrics.REQUESTS_TO_DB_FAILED);
       this._performanceSampler?.stopTimer(requestTimer);
 
-      const querySize = queryResult.length();
+      const querySize = queryResult ? Object.keys(queryResult).length : 0;
       this._performanceSampler?.updateHistogram(EHistogramMetrics.COLLECTION_SIZE, querySize);
 
-      return queryResult;
+      const valuesOnly = [];
+      Object.values(queryResult).forEach(value => valuesOnly.push(JSON.parse(value.toString())));
+
+      this._logger.info(`Query to ${fullQuery} resultSize is: ${valuesOnly.length}`);
+      this._logger.debug(`${fullQuery} query result: (length = ${querySize}):\n${valuesOnly}`);
+
+      return valuesOnly as T[];
     } catch (error) {
       const totalTime = new Date().getMilliseconds() - startedTime.getMilliseconds();
       this._logger.error(`Query to ${fullQuery} failed! Took: ${totalTime} ms.`);
