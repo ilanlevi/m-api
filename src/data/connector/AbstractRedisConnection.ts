@@ -1,4 +1,4 @@
-import * as Redis from 'ioredis';
+import Redis from 'ioredis';
 
 import AbstractSetting from 'src/core/settings/AbstractSetting';
 import { AbstractLogger } from 'src/core/logger/AbstractLogger';
@@ -10,7 +10,7 @@ export abstract class AbstractRedisConnection {
    * io-redis driver instance
    *  - For more data: {@link https://github.com/luin/ioredis/blob/master/API.md#Commander}
    */
-  protected _redis: Redis;
+  protected _redis: Redis.Redis;
 
   /**
    * class logger instance

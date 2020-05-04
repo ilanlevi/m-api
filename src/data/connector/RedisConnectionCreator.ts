@@ -1,7 +1,7 @@
-import * as Redis from 'ioredis';
+import Redis from 'ioredis';
 
 import AbstractSetting from 'src/core/settings/AbstractSetting';
-import {EPreferredConnectionType, ERedisConnectionMode} from 'src/core/config_types/IRedisConfig';
+import { EPreferredConnectionType, ERedisConnectionMode } from 'src/core/config_types/IRedisConfig';
 
 export interface IRedisTypeFromConfig {
   /**
@@ -67,7 +67,6 @@ export class SentinelsRedis implements IRedisTypeFromConfig {
   }
 }
 
-
 export class ClusterRedis implements IRedisTypeFromConfig {
   /**
    * Cluster redis connection.
@@ -101,7 +100,6 @@ const redisConfigMapping = new Map<string, IRedisTypeFromConfig>();
 redisConfigMapping.set(ERedisConnectionMode.CLUSTER, new ClusterRedis());
 redisConfigMapping.set(ERedisConnectionMode.SENTINEL, new SentinelsRedis());
 redisConfigMapping.set(ERedisConnectionMode.SINGLE_SERVER, new SingleRedisNode());
-
 
 /**
  * Extract server and ports from config (for clusters)
