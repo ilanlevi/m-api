@@ -53,14 +53,7 @@ export const DEFAULT_LOGGER_CONFIG_NAME = 'logger';
  * Logger format
  */
 export const MY_LOGGER_FORMAT = Winston.format.printf(({ level, message, classLogged, timestamp }) => {
-  // todo: remove test
-  if (classLogged) {
-    const msg = `${timestamp} [${level}]: (${classLogged}) -> ${message}`;
-    console.info(`blabla\n${msg}`);
-    return msg;
-  }
-  console.info(`${timestamp} [${level}]: ${message}`);
-  return `${timestamp} [${level}]: ${message}`;
+  return `${timestamp} [${level}]: (${classLogged}) -> ${message}`;
 });
 
 /**
