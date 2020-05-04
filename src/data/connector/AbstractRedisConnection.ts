@@ -1,9 +1,9 @@
 import * as Redis from 'ioredis';
 
 import AbstractSetting from 'src/core/settings/AbstractSetting';
-import {AbstractLogger} from 'src/core/logger/AbstractLogger';
-import CollectionPerformances from "src/entities/CollectionPerformances";
-import {ECounterMetrics} from "src/entities/EAllMetrics";
+import { AbstractLogger } from 'src/core/logger/AbstractLogger';
+import CollectionPerformances from 'src/entities/CollectionPerformances';
+import { ECounterMetrics } from 'src/entities/EAllMetrics';
 
 export abstract class AbstractRedisConnection {
   /**
@@ -26,7 +26,6 @@ export abstract class AbstractRedisConnection {
    * performance monitor
    */
   protected _performanceSampler: CollectionPerformances;
-
 
   /* Abstracts  */
 

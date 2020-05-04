@@ -1,6 +1,6 @@
-import {metricKey, PerformanceSampler} from "fartsampler";
+import { metricKey, PerformanceSampler } from 'fartsampler';
 import Metrics from 'metrics';
-import {ECounterMetrics, EHistogramMetrics, ETimerMetrics} from "src/entities/EAllMetrics";
+import { ECounterMetrics, EHistogramMetrics, ETimerMetrics } from 'src/entities/EAllMetrics';
 
 export const CLASS_NAME_TAG = 'className';
 export const ENV_NAME_TAG = 'envFullName';
@@ -24,9 +24,9 @@ export default class CollectionPerformances {
     this.updateCounter(counterType, -1);
   }
 
-  private updateCounter(counterType: ECounterMetrics, count: number){
+  private updateCounter(counterType: ECounterMetrics, count: number) {
     const metricName = ECounterMetrics[counterType];
-    if(!counterType) {
+    if (!counterType) {
       console.error(`Cannot get metric name in: updateCounter (value = ${count}), ignoring measurement!`);
       return;
     }
@@ -40,7 +40,7 @@ export default class CollectionPerformances {
 
   public updateHistogram(histogramType: EHistogramMetrics, value: number) {
     const metricName = EHistogramMetrics[histogramType];
-    if(!metricName) {
+    if (!metricName) {
       console.error(`Cannot get metric name in: updateHistogram (value = ${value}), ignoring measurement!`);
       return;
     }
@@ -53,7 +53,7 @@ export default class CollectionPerformances {
 
   public startTimer(timerType: ETimerMetrics) {
     const metricName = ETimerMetrics[timerType];
-    if(!metricName) {
+    if (!metricName) {
       console.error(`Cannot get metric name in: startTimer, ignoring measurement!`);
       return null;
     }
@@ -65,7 +65,7 @@ export default class CollectionPerformances {
   }
 
   public stopTimer(context: Metrics.TimerContext) {
-    if(context) {
+    if (context) {
       try {
         return PerformanceSampler.stopTimer(context);
       } catch (e) {

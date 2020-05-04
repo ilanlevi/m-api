@@ -1,13 +1,12 @@
 import AbstractSetting from 'src/core/settings/AbstractSetting';
 import Logger from 'src/core/logger/Logger';
-import {AbstractRedisConnection} from 'src/data/connector/AbstractRedisConnection';
-import {ERedisConnectionMode} from 'src/core/config_types/IRedisConfig';
-import {redisTypeFromConfigMapping} from 'src/data/connector/RedisConnectionCreator';
-import CollectionPerformances from "src/entities/CollectionPerformances";
-import {ECounterMetrics, EHistogramMetrics, ETimerMetrics} from "src/entities/EAllMetrics";
+import { AbstractRedisConnection } from 'src/data/connector/AbstractRedisConnection';
+import { ERedisConnectionMode } from 'src/core/config_types/IRedisConfig';
+import { redisTypeFromConfigMapping } from 'src/data/connector/RedisConnectionCreator';
+import CollectionPerformances from 'src/entities/CollectionPerformances';
+import { ECounterMetrics, EHistogramMetrics, ETimerMetrics } from 'src/entities/EAllMetrics';
 
 export default class RedisConnector extends AbstractRedisConnection {
-
   /**
    * Init service from settings.
    * Calls {@link this.initializeRedisConnection}
@@ -87,14 +86,11 @@ export default class RedisConnector extends AbstractRedisConnection {
       this._performanceSampler?.updateHistogram(EHistogramMetrics.COLLECTION_SIZE, querySize);
 
       return queryResult;
-
     } catch (error) {
       const totalTime = new Date().getMilliseconds() - startedTime.getMilliseconds();
       this._logger.error(`Query to ${fullQuery} failed! Took: ${totalTime} ms.`);
       this._logger.error(`Reason: ${error}`);
     }
-      return [];
+    return [];
   }
-
-
 }

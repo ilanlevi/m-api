@@ -1,8 +1,7 @@
 import RedisConnector from 'src/data/connector/RedisConnector';
 import AbstractSetting from 'src/core/settings/AbstractSetting';
 import Logger from 'src/core/logger/Logger';
-import CollectionPerformances from "src/entities/CollectionPerformances";
-
+import CollectionPerformances from 'src/entities/CollectionPerformances';
 
 export default class RedisQueryManager {
   private _logger: Logger;
