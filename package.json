@@ -38,7 +38,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "graphql": "14.6.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "module-alias": "^2.2.2",
     "node-fetch": "^2.6.0",
     "winston": "^3.2.1",
