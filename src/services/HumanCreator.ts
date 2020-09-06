@@ -1,6 +1,7 @@
 import { Human } from 'src/interfaces/types';
 
 const FIRST_NAME = ['bla', 'Ilan', 'Roy', 'Nadav', 'Omer'];
+const LOCATIONS = ['TA', 'HAIFA', 'BLAAAAA'];
 const MAX_ID = 2222;
 
 export default class HumanCreator {
@@ -10,6 +11,7 @@ export default class HumanCreator {
     for (let i = 0; i < numberOfHumans; i++) {
       const rnd1 = FIRST_NAME[Math.floor(Math.random() * FIRST_NAME.length)];
       const rnd2 = FIRST_NAME[Math.floor(Math.random() * FIRST_NAME.length)];
+      const rndLocation = LOCATIONS[Math.floor(Math.random() * LOCATIONS.length)];
       const rndID = Math.floor(Math.random() * MAX_ID);
 
       newMap.set(`${rndID}`, {
@@ -19,6 +21,7 @@ export default class HumanCreator {
           mapType: mapType,
           name: `${rnd1}, ${rnd2}`,
           id: rndID,
+          location: rndLocation
         },
       });
     }

@@ -11,10 +11,11 @@ export default gql`
     mapType: String
     name: String
     id: Int
+    location: String
   }
 
   # the schema allows the following query:
   type Query {
-    human(mapType: String!, lastUpdated: Float): [Human]
+    human(mapType: String!, location: String, lastUpdated: Float): [Human]
   }
 `;

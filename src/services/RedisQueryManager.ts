@@ -1,9 +1,7 @@
 import RedisConnector from 'src/data/connector/RedisConnector';
 import AbstractSetting from 'src/core/settings/AbstractSetting';
 import Logger from 'src/core/logger/Logger';
-import CollectionPerformances from 'src/entities/CollectionPerformances';
 import HumanCreator from 'src/services/HumanCreator';
-import { ETimerMetrics } from 'src/entities/EAllMetrics';
 
 // todo: delete (just for testing)
 const NUM_OF_HUMAN = 10;
